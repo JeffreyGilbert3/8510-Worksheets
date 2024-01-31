@@ -1,7 +1,7 @@
 ---
 title: 'Worksheet 1: R Basics'
-author: ""
-date: ""
+author: "Jeffrey Gilbert"
+date: "1/31/2024"
 ---
 _This is the first in a series of worksheets for History 8510 at Clemson University. The goal of these worksheets is simple: practice, practice, practice. The worksheet introduces concepts and techniques and includes prompts for you to practice in this interactive document. When you are finished, you should change the author name (above), knit your document to a pdf, and upload it to canvas._
 
@@ -27,9 +27,15 @@ Numbers can be used to do arithmetic.
 ```
 
 (@) You try, multiple two numbers. 
+```{r}
+4*4
+```
 
 
 (@) Can you multiply two numbers and then divide by the result? 
+```{r}
+(2*2)/4
+```
 
 The next type of value is a **string**. Strings are lines of text. Sometimes these are referred to as character vectors. To create a string, you add text between two quotation marks. For example: 
 ```{r}
@@ -38,7 +44,7 @@ The next type of value is a **string**. Strings are lines of text. Sometimes the
 
 (@) Try to create your own string.
 ```{r}
-
+"Go Lions"
 ```
 
 You can't add strings using `+` like you can numbers. But there is a function called `paste()` which concatenates character vectors into one. This function is _very_ useful and one you'll use a lot in a variety of circumstances. Here's what that looks like: 
@@ -49,12 +55,12 @@ paste("Hello", "Clemson Graduate Students")
 
 (@) Try it, add two strings together like the above example. 
 ```{r}
-
+paste("Apple", "pie")
 ```
 
 (@) Can you explain what happened in 2-3 sentences? 
 
-> 
+> The paste function essentially combined two seperate strings into one single string. So, the function ran both arguments and outputted those into a single string. It does, however, create a space between the two strings.
 
 The last type are **logical** values like `TRUE` and `FALSE`. (Note that these are all caps.)
 
@@ -94,11 +100,16 @@ Logical Operators allow you to combine or change the results of comparisons.
 ```
 (@) Explain, what does the code on each line above do? 
 
->
-
+>5 == 10: This code indicates that 5 equals 10, which would return the value of FALSE.
+3 < 4: This code indicates that 3 is less than 4, which would return the value of TRUE.
+5 != 10: This code indicates that 5 does not equal 10, which would return the value of TRUE.
+5 != 5 : This code indicates that 5 does not equal 5, which would return the value of FALSE.
+3 == 4 | 3: This code indicates that 3 equals 4 or 3, which would return the value of TRUE.
+3 != 4 & 3 != 5: This code indicates that 3 does not equal 4 and that 3 does not equal 5, which would return the value of TRUE.
 (@) Create your own comparison. 
-```{r}
 
+```{r}
+27 == 27 & 25 != 15
 ```
 
 ---
@@ -134,13 +145,13 @@ Whatever you prefer, be consistent and your future self will thank you when your
 (@) You try, create a variable and assign it a number: 
 
 ```{r}
-
+x <- 33
 ```
 
 (@) Can you assign a string to a variable?
 
 ```{r}
-
+x <- "rain"
 ```
 
 Once we've assigned a variable we can use that variable to run calculations just like we did with raw numbers.
@@ -162,21 +173,30 @@ My.Calculation <- (x + x)*10
 
 (@) You try. Assign a number to x and a number to y. Add those two numbers together.
 ```{r}
-
+x <- 13
+y <- 12
+x+y
 ```
 
 (@) Can you take `x` and `y` and multiply the result by 5? 
 ```{r}
-
+x <- 1
+y <- 1
+(x+y)*5
 ```
 
 (@) Try creating two variables with names other than `x ` and `y`. Descriptive names tend to be more useful. Can you multiply the contents of your variables? 
 ```{r}
-
+Carrots <- 7
+Cakes <- 2
+Carrots * Cakes
 ```
 
 (@) Try creating two variables that store strings. Can you concatenate those two variables together? 
 ```{r}
+c <- "cats"
+t <- "tigers"
+paste(c, t)
 
 ```
 
@@ -212,7 +232,7 @@ my.numbers * 2
 ```
 (@) Explain in a few sentences, what happened in the code above?
 
->
+> my.numbers was assigned a list of numbers. When my.numbers was multiplied by 2, all of the numbers in the list were multiplied by 2. This is due to my.numbers being a vector that is storing multiple values. 
 
 Lets try something slightly different. 
 ```{r}
@@ -220,11 +240,11 @@ my.numbers[3] * 2
 ```
 (@) Explain in a few sentences, what happened in the code above? 
 
->
+> The [3] indicates that it is selecting the third value in the list for my.numbers. So when multiplying my.numbers[3] by 2 is really multiplying 6 by 2, since 6 is the third number in the list. 
 
 (@) You try, create a list of five items and store it in a descriptive variable. 
 ```{r}
-
+Ingredients <- c("lettuce", "onions", "tomatos", "bread", "cheese")
 ```
 
 
@@ -256,14 +276,18 @@ We can ask R to pull up the documentation like this:
 
 (@) Now you try, find the documentation for the function  `signif()`.
 ```{r}
-
+?signif()
 ```
 
 In real life, you typically you wouldn't want to store this code in your script file. You probably don't need to pull up the documentation for the function every time you run that piece of code. But for the purposes of this worksheet we're adding it to our `.Rmd` document. 
 
 (@) Use the console to find the documentation for `floor()`? Try it and then tell me, what does that function do? 
 
->
+>The floor function takes a single number (argument) and then retuns a number (vector) that contains the largest integers that are less than the elements of x.
+
+```{r}
+?floor()
+```
 
 ### Data Frames & Packages
 
@@ -301,7 +325,7 @@ What is going on here? Each line within this function (x,y,z) creates a new colu
 
 (@) What is going on in row z? Can you explain the logic here?
 
->
+>Row z is essenitally indicating that the value of z is equal to the value of x times 2 plus the value of y. So z is equal to 1:5 * 2 + 1, since x equals 1:5 and y equals 1.
 
 
 ## Loading Dataframes from Packages
