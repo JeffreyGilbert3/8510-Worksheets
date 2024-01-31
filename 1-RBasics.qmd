@@ -347,7 +347,7 @@ Run `help(package="DigitalMethodsData")` in your console to pull up a list of da
 
 For demonstration purposes we'll use the `gayguides` data here. Pull up the help documentation for this dataset. What does the documentation tell you abou the scope of this dataset? 
 
-> The documentation indicates that the 'gayguides' dataset is a compilation of Bob Damron's Address Books (1965-1985). The documentation also mnentions that it was last updated in December 2022. 
+> The documentation indicates that the 'gayguides' dataset is a compilation of Bob Damron's Address Books (1965-1985). The documentation also mentions that the dataset was last updated in December 2022. 
 
 To use a dataset included in this package we first need to load it. We can do so like this:
 
@@ -375,7 +375,7 @@ tail(gayguides)
 
 (@) Reflect on the previous two prompts. How did you figure these out? 
 
->I used ?head to bring up the help panel. Within that help panel were instructions on how to use the tail function. With regard to printing out 10 rows instead of 6, I ended up using Google. The websites provided the information in a more digestable manner than the help panel. 
+>I used ?head to bring up the help panel. Within the help panel were instructions about how to use the tail function. With regard to printing out 10 rows instead of 6, I ended up using Google. The websites provided the information in a more digestable manner than the help panel. 
 
 The `str()` function is another very useful function for understanding a dataset. It compactly displays the internal structure of an R object. 
 ```{r}
