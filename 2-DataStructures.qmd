@@ -103,12 +103,12 @@ In the `matrix()` function:
 
 (@) You try now, create a matrix that had five rows with numbers that range from 25 to 49. 
 ```{r}
-
+matrix (25:49, byrow = TRUE, nrow = 5)
 ```
 
 (@) Can you create a matrix that has 3 rows with only even numbers from 2 to 18? 
 ```{r}
-
+matrix (evens (2:18), nrow = 3) 
 ```
 
 ##### Subsetting Matricies 
@@ -147,7 +147,7 @@ data("gayguides")
 
 To subset this data we could pull two particular columns like this: 
 ```{r}
-#gayguides[2:3]
+gayguides[,2:3]
 ```
 That returns columns 2 and 3 (including every single row!). 
 
@@ -158,32 +158,39 @@ gayguides[1:3,]
 
 (@) Why is this different? What do we get compared to the previous example? 
 
->
+> Where the comma is placed determines if a row or column will be displayed. So a comma before the numbers will output the selected columns, while a comma aftr the numbers will output the selected rows. 
 
 (@) Can you find just the city and state for the first 5 entries? 
 ```{r}
+head (gayguides$city, 5)
+head (gayguides$state, 5)
 
+gayguides[,8:9][1:5,]
 ```
 
 (@) How about the street address and type for rows 2,555 to 2,560?
 
 ```{r}
-
+gayguides[,5:6][2555:2560,]
 ```
 
 (@) Load another dataset from `DigitalMethodsData`. Subset it to find some element of the data. Write the code below and then explain what element of the data you wanted to subset and why:
 ```{r}
+data(BostonWomenVoters)
+
+BostonWomenVoters[,7:12][1:5,]
+BostonWomenVoters$Name[1:5]
 
 ```
 
-> 
+> I wanted to get the basic demographic information of the first five voters, so selected the columns that are most relevant for that information as well as the first five entires. Im not sure if that is exactly what you wanted, so I also included another code that specifically targets the names of the voters for the first five entires. 
 
 Another useful operator to know is `$` which we used a little bit in the previous worksheet. `$` is shorthand for accessing a variable in a dataframe. 
  
 So for example both of these produce the same result. One is just easier to type. Because the output here is so large, I've commented these two lines out. Uncomment them and the run the block.
 ```{r R.options=list(max.print=10)}
-#gayguides["title"]
-#gayguides$title
+gayguides["title"]
+gayguides$title
 ```
 
 Notice the above output is _huge_. We can combine `$` and `[` to drill down more specifically like we did earlier.
@@ -193,7 +200,7 @@ gayguides$city[100:110]
 
 (@) What does this code do? 
 
->
+> This code specifically outputs the row values from 100 to 110 in the city column. 
 
 
 We can also use `$` to create a new column in `gayguides`. 
@@ -256,22 +263,44 @@ if (x > 90) {
 
 (@) You are teaching History 100 for Clemson. Write an `if` statement that calculates whether the enrollment cap of 30 on your class has been met. 
 ```{r}
+students <- 27
+class_size <- 30
 
+if (students == class_size) { 
+  print("enrollment met")
+  } else { 
+  print ("have not met enrollment requirement") 
+  }
 ```
 
 (@) Create a list of presidents and store it in a variable. Use an `if` statement to check if the number of presidents in the list is more than 5. If its not indicate that too. 
 ```{r}
+presidents <- c( "washington", "jefferson", "lincoln", "roosevelt", "hoover", "ford", "carter")
+for (p in length(presidents))
+
+if (p > 5) { 
+  print("more than five presidents")
+  } else { 
+  print ("sample size is too small") 
+  }
 
 ```
 
 (@) You can also use an if statement to check a variable in a dataframe. How might you use an if statement to check if the GayGuides dataset contains any year after 1990? (Hint: first try to figure out how to determine the latest year in the dataframe and then build an if statement that checks that and prints something out if its true or false. You should think about what kind of value in contained in the Year column, how to access it, and how to check for the latest value.) 
 
 ```{r}
+for (x in length(gayguides$Year))
+  
+if (x > 1990) {
+  print ("cantains years after 1990")
+  } else { 
+  print ("does not contain years after 1990") 
+  }
 ```
 
 (@) Reflect on the question above. How did you figure this out? What was the process you went through to build this chunk of code?
 
-> 
+> I kept going through my notes from class last week, where I eventually found out how to assign a lenth to a list. I then was able to apply that type of code to the presidents question and then I altered that code to fit the dataframe question. 
 
 #### Loops
 
@@ -303,12 +332,25 @@ for (p in 1:length(presidents)) {
 
 (@) Why does this work? What does `length()` do and why do we use it on `presidents`?
 
-> 
+> Length is indicating the amount of presidents in the list, so each string counts as 1. It essentially is allowing us to quantify a list of strings. 
 
 Create a character vector that contains the title of each of your classes this semester. Can you write a `for` loop that prints out "I am enrolled in" and the name of each of your classes? ("I am enrolled in History 8150", "I am enrolled in History 8000".....etc). Hint: you'll need a function to combine the output and some text of your choosing inside the function. 
 
 ```{r}
+classes_2024 <- c("History 8510", "History 8520", "History 8200")
+for (c in 1:length (classes_2024)) 
 
+if (classes_2024[c] == "History 8510") {
+  print("I am enrolled in History 8510") 
+}
+
+if (classes_2024[c] == "History 8520") {
+  print("I am enrolled in History 8520")
+}
+
+if (classes_2024[c] == "History 8200") {
+  print("I am enrolled in History 8200")
+}
 ```
 
 Sometimes we want our loop to terminate itself early. There are two statements that help us do that: 
@@ -339,16 +381,39 @@ for (i in 1:10) {
 ```
 
 (@) What happened here? Why did the loop only print 3 and 4? 
-
+> The next indicates that it will only draw on the values greater than 3, while the break indicates that it will stop the loop after it reaches a value that is less than or equal to 5. So the only values that can be printed that match the criteria are 3 and 4.
 
 (@) In the state population data, can you write a loop that pulls only states with populations between 200,000 and 250,000 in 1800? You could accomplish this a few different ways. Try to use next and break statements. 
 ```{r}
+data("statepopulations")
+
+for (p in 1:length(statepopulations$X1800)) {
+  print (statepopulations$X1800[p])
+}   
+for (statepopulations$X1800[p] in 200000:250000) { 
+    if (statepopulations$X1800[p] < 200000)
+    next
+  
+  if (statepopulations$X1800[p] >= 250000)
+    break
+  
+  print (statepopulations$X1800[p])
+}
 
 ```
 
 (@) What if we wanted to loop through the gay guides data? Can you write a loop that iterates through the cities in the Gay Guides data and returns the title of any location in Greenville? 
 ```{r}
+for (p in 1:length (gayguides$city)) {
+  print (gayguides$city[p])
+}   
+for (t in 1:length (gayguides$title)) {
+  print (gayguides$title[t])
+} 
 
+if (gayguides$city[p] == "Greenville") {
+  print(gayguides$title[t]) 
+}
 ```
 
 `while` is another useful tool for writing loops. While will run a loop _while_ a condition is true. Once that condition is not true, it exits. For example: 
