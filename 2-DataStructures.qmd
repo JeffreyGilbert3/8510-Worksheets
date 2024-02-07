@@ -388,34 +388,37 @@ for (i in 1:10) {
 data("statepopulations")
 
 for (p in 1:length(statepopulations$X1800)) {
-  print (statepopulations$X1800[p])
-}   
-for (statepopulations$X1800[p] in 200000:250000) { 
-    if (statepopulations$X1800[p] < 200000)
+  if (is.na(statepopulations$X1800[p])) { 
     next
-  
-  if (statepopulations$X1800[p] >= 250000)
-    break
-  
-  print (statepopulations$X1800[p])
+  }
+  if (statepopulations$X1800[p] > 200000) {
+    next
+  }  
+  if (statepopulations$X1800[p] < 250000) {
+}
+  print (statepopulations$STATE[p])
 }
 
 ```
 
 (@) What if we wanted to loop through the gay guides data? Can you write a loop that iterates through the cities in the Gay Guides data and returns the title of any location in Greenville? 
 ```{r}
-for (p in 1:length (gayguides$city)) {
-  print (gayguides$city[p])
-}   
-for (t in 1:length (gayguides$title)) {
-  print (gayguides$title[t])
-} 
-
+for (p in 1:length(gayguides$city)) {
+  if (is.na(gayguides$city[p])) {
+    next
+  }
+for (t in 1:length(gayguides$title)) {
+  if (is.na(gayguides$title[t])) {
+    next
+  }
 if (gayguides$city[p] == "Greenville") {
   print(gayguides$title[t]) 
+    }
+  }
 }
 ```
-
+ > I could not figure out this one.
+ 
 `while` is another useful tool for writing loops. While will run a loop _while_ a condition is true. Once that condition is not true, it exits. For example: 
 ```{r}
 i <- 1
@@ -454,12 +457,12 @@ Here's another example:
 ```{r}
 historyStudents <- function(studentname, class) {
   statement <- paste("Hello ", studentname, ". Welcome to ", class, "!", sept="")
-  statement
+  print (statement)
 }
 ```
 (@) Can you run this function? 
 ```{r}
-
+historyStudents("tommy", "history")
 ```
 
 
@@ -472,12 +475,18 @@ There are several components to a function.
 
 (@) Write a function that takes a string of text and counts the number of characters. The function should return "There are xx characters in that string." 
 ```{r}
+mystring <- "it is Wednesday"
+nchar <- function (mystring) { 
+  statement <- paste("There are", nchar(mystring), "characters in that string")
+  print(paste(statement))
+} 
 
+statement
 ```
 
 (@) Reflect on the process of building the above function. How did you go about figuring this out? 
 
->
+> I have no idea how to get this function to work. I've looked up a lot of coding tutorials online, and none of them are working. 
 
 The body of a functions can use any of the techniques we've learned in this worksheet like loops and if statements. For example: 
 ```{r}
@@ -503,9 +512,11 @@ grade(75)
 (@) In the example below, why doesn't George Washington's grade get printed out? 
 ```{r}
 GeorgeWashington <- grade(60)
+
+GeorgeWashington
 ```
 
->
+>It didnt run because only the grade was being assigned to GeorgeWashington. Once it was assigned, I typed in GeorgeWashington and it printed out "C".
 
 
 Here's a more complex example: 
@@ -521,16 +532,39 @@ gg.locations <- function (city, year) {
     } 
   }
 }
+
 ```
 
 (@) Write a function that uses the things you've learned in this worksheet. The function should accept two arguments, city and year. It should pull all the locations in that city and year and return a statement that says "Found a location called xxx". (Where x is the title of a location in that year and city.) 
 ```{r}
+gg.locations <- function (city, year) {
+  data(gayguides)
 
+  for (i in 1:length(gayguides$city)) {
+    if (gayguides$city[i] == city && gayguides$Year[i] == year) {
+     print(paste("Found a location called ", gayguides$title[i]))
+    } else {
+      next 
+    } 
+  }
+}
+
+gg.locations ("Troy", 1981)
 ```
 
 (@) Use the Boston Women Voter dataset. Write a function that accepts the name of an occupation. Your function should return new dataframe that includes the records for every voter listed with that occupation.  
 ```{r}
-
+record <- function (Occupation) {
++   data(BostonWomenVoters)
++   
++   for (i in 1:length(BostonWomenVoters$Occupation)) {
++     if (BostonWomenVoters$Occupation[i] == "Housewife") {
++       print(paste("Record found", record)) 
+  } else {
+    next 
+    }
+  }
+}
 
 ```
-
+> I could not figure out this one. 
