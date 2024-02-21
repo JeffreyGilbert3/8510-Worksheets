@@ -208,7 +208,7 @@ BostonWomenVoters %>%
 ```{r}
 gayguides %>% 
     select(title, city, state, Year) %>%
-    group_by(title, city, state, Year) %>%
+    group_by(city) %>%
   summarize(mean((city), state == "SC", Year > 1970 & Year < 1975))
 ```
 
@@ -335,21 +335,28 @@ judges %>%
 ```{r}
 
 ```
+> what judges were appointed by FDR
 
 (@) Now write some code to address that question. Comment the code with notes that explain your thinking as you go. Use functions like select(), filter(), etc to pair down your dataset and reshape it to address your question. 
 ```{r}
+judges %>%
+  filter(Appointing.President..1. == "Franklin D. Roosevelt")
 
 ```
 
 (@) Write a function that filters the gay guides dataset. It should accept 2 arguments: year and state. When passed to the function the function should return only the title, type, state and year for each entry. 
 ```{r}
-maininformation <- function (year, state) {
-  data("gayguides")
-  gayguides %>% 
-    filter(title, type, state, Year) %>%
-    summarize(paste(title, type, state, year))
-  
+library(DigitalMethodsData)
+library(tidyverse)
+data("gayguides")
+maininformation <- function (gg.year, gg.state) {
+    gayguides %>% 
+    filter(Year == gg.year & state == gg.state) %>%
+    select(title, type, state, Year) %>%
+    return(filtered_data)
 }
+  filtered.data <- maininformation(1984, "SC")
+print(filtered.data)
 
 ```
 >I'm not sure how to write this function, but this is my best attempt at it. 
