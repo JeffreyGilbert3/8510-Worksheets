@@ -217,7 +217,7 @@ gayguides %>%
 southernstates <- c("AL", "AR", "FL", "GA", "KY", "LA", "MD", "MS", "NC", "SC", "TN", "TX", "VI", "WV")
 
 gayguides %>%
-  filter(southernstates, city, Year) %>%
+  filter(southernstates) %>%
   select(city, Year) %>%
   summarize(southernstates & 1975)
   
@@ -279,7 +279,7 @@ sc.parks <- sc.parks %>%
 ```
 
 (@) What did this code do? 
->
+> The pivot longer increased the length of data by increasing the number of rows for year and count, but not the type of worker. 
 
 (@) Here's another wide data frame. Can you turn this from a wide to a narrow data frame? 
 ```{r}
@@ -294,12 +294,14 @@ sc.parks %>%
 
 (@) Widen the `sc.parks` dataset so that the column names are drawn from the type of recreation worker.
 ```{r}
-
+sc.parks %>%
+  pivot_wider(names_from = type_of_worker, values_from = count)
 ```
 
 (@) Turn `rec.spaces` into a wide dataframe. 
 ```{r}
-
+rec.spaces %>%
+  pivot_wider(names_from = type, values_from = X1930)
 ```
 
 
@@ -315,11 +317,17 @@ The implicit question was, "How many locations appear in each year?". The `judge
 
 (@) First, tell me, what is the question you are asking? 
 ```{r}
+data("judges")
 
 ```
+>>What was the life expectancy for a judge?
 
 (@) Now write some code to address that question. Comment the code with notes that explain your thinking as you go. Use functions like select(), filter(), etc to pair down your dataset and reshape it to address your question. 
 ```{r}
+
+data("judges")
+judges %>% 
+  mutate (age = (as.numeric(Death.Year) - (as.numeric(Birth.Year))), na.rm = TRUE)
 
 ```
 
@@ -335,6 +343,13 @@ The implicit question was, "How many locations appear in each year?". The `judge
 
 (@) Write a function that filters the gay guides dataset. It should accept 2 arguments: year and state. When passed to the function the function should return only the title, type, state and year for each entry. 
 ```{r}
+maininformation <- function (year, state) {
+  data("gayguides")
+  gayguides %>% 
+    filter(title, type, state, Year) %>%
+    summarize(paste(title, type, state, year))
+  
+}
 
 ```
-
+>I'm not sure how to write this function, but this is my best attempt at it. 
