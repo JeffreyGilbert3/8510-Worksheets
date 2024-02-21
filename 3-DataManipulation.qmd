@@ -217,9 +217,9 @@ gayguides %>%
 southernstates <- c("AL", "AR", "FL", "GA", "KY", "LA", "MD", "MS", "NC", "SC", "TN", "TX", "VI", "WV")
 
 gayguides %>%
-  filter(southernstates) %>%
+  filter(southernstates, city, Year) %>%
   select(city, Year) %>%
-  summarize(mean(southernstates & 1975))
+  summarize(southernstates & 1975)
   
 ```
 
@@ -247,13 +247,20 @@ head(almshouse_admissions)
 (@) Below I've downloaded data about each of the census regions. Join this dataset with `gayguides`. Create a data frame that includes each of the regions and the total number of locations in 1980. How many locations appear in the Mountain region in 1980?
 ```{r}
 regions <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/censusregions.csv")
+
+gayguidesregions <- cross_join(gayguides, regions)
 ```
 
 (@) Explain what you did above. What variable did you join by and why? What results?
+> I used the cross join function to combine regions with the gayguides daataset. Now the dataset also has a column with all of the regions. 
 
 (@)How much did LGTBQ life grow between 1970 and 1980? Can you create a data frame that computes the growth in the number of locations between 1970 and 1980 for every state? For every region? 
 ```{r}
 
+gayguidesregions %>% 
+    select(state, region, Year) %>%
+    group_by(title, state, region, Year) %>%
+  summarize(mean((city), state == "SC", Year > 1970 & Year < 1975))
 ```
 
 
