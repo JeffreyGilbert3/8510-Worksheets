@@ -126,12 +126,16 @@ ggplot(data = BostonWomenVoters, aes(x = Age)) +
 
 (@) By default, `geom_histogram()` is choosing the number of bins. Can you change the number of bins or the bin width? (Hint: How might you look up the options for this function?)
 ```{r}
+data(BostonWomenVoters)
 
+ggplot(data = BostonWomenVoters, aes(x = Age)) + 
+  geom_histogram(bins = 80, color = "black", fill = "red")
 ```
+> I ended up having to look up what bins do online, since I could not find bins with the help function (?) in the console. 
 
 (@) Explain, what does changing the number of bins do? 
 
-> 
+> A bin is essentially 1 entry in the histogram. So choosing the number of bins alters the granularity of the histograph.
 
 ### Barplots 
 
@@ -145,21 +149,48 @@ ggplot(sc.rec, aes(x = state, y = state.expenditures )) +
 
 (@) Using the `gayguides` data, create a bar chart that shows the number of locations in 1980 in South Carolina, Georgia, and North Carolina. 
 ```{r}
+data("gayguides")
+
+gg.by.state <-gayguides %>%
+  filter(state == "SC" | state == "GA" | state == "NC") %>%
+  filter(Year == 1980) %>%
+  group_by(state) %>% 
+  summarize(count = n())
+
+ggplot(data = gg.by.state, mapping = aes(x = state, y = count)) + geom_col()
 
 ```
 
 (@) Using the `gayguides` data, plot the number of religious institutions in each state.
 ```{r}
+data("gayguides")
 
+gg.by.religious.institutions <-gayguides %>%
+  filter(type == "Religious Institution") %>%
+  group_by(state) %>% 
+  summarize(count = n())
+
+ggplot(data = gg.by.religious.institutions, mapping = aes(x = state, y = count)) + geom_col()
 ```
 
 (@) Formulate a question based on a dataset of your choice. That question should be something that would be appropriately answered by a bar chart. What is the question you want to explore?
 
-<
+> How many student voters are there in each state in the BostonWomenVoters dataset?
 
 (@) Now write the code to answer that question and use comments (`#`) to explain your thinking as you go.
 ```{r}
+data("BostonWomenVoters")
 
+gg.by.voters <-BostonWomenVoters %>%
+  #I need to first filter out the students from the rest of the other occupations.
+  filter(Occupation == "Student") %>%
+  #There is not just a state, so I have to use where they are born from and assume that they never moved out of state.
+  group_by(State.or.Province.of.Birth) %>% 
+  #I believe this just counts the amount.
+  summarize(count = n())
+
+ggplot(data = gg.by.voters, mapping = aes(x = State.or.Province.of.Birth, y = count)) + geom_col()
+#Strangely enough, I get two bars with Massachusetts. 
 ```
 
 ### Line Charts
@@ -175,12 +206,26 @@ ggplot(gg.byyear, aes(x = Year, y = count)) +
 
 (@) Create a line chart that shows the number of religious institutions in the gay guides data over time.
 ```{r}
+data(gayguides)
+gg.by.institute <- gayguides %>% 
+  filter(type == "Religious Institution") %>%
+  group_by(Year) %>% 
+  summarize(count = n())
 
+ggplot(gg.by.institute, aes(x = Year, y = count)) +
+  geom_line()
 ```
 
 (@) In the gayguides data, danger or risk is indicated in several different ways. Sometimes it through the use of an amenity categorization of (HOT) or (AYOR) which meant that these locations were frequented by police and should be used at your own risk. Other times, locations were listed as "inquire locally" in either the description or address field. There are many reasons a location would have requested to have been listed this way. Many times, it was due to harassment and the location deemed it too dangerous to publicly list its location. Can you create a subset of the gay guides data about risk and then use it to create a chart about the usage of these indicators over time? 
 ```{r}
+data(gayguides)
+gg.by.risk <- gayguides %>% 
+  filter(amenityfeatures == "(HOT)" | amenityfeatures == "(AYOR)" | amenityfeatures == "(inquire locally)" | amenityfeatures == "inquire locally") %>%
+  group_by(Year) %>% 
+  summarize(count = n())
 
+ggplot(gg.by.risk, aes(x = Year, y = count)) +
+  geom_line()
 ```
 
 
@@ -196,8 +241,16 @@ ggplot(gg.byyear, aes(x = Year, y = count)) +
 
 (@) Using the state recreation data, can you create a chart that outlines the total expenditures in South Carolina by city?
 ```{r}
+gg.by.expenditures <- recreational.data %>% 
+  filter(state == "SC") %>% 
+  group_by(city, state) %>% 
+  summarize(total_expenditures)
+
+ggplot(gg.by.expenditures, aes(x = city, y = total_expenditures)) +
+  geom_line() + facet_wrap(~state)
 
 ```
+> Need to figure this one out still.
 
 (@) Using the gayguides data can you select 5 types of locations and chart the number of each type between 1965 and 1980? 
 ```{r}
@@ -206,8 +259,13 @@ ggplot(gg.byyear, aes(x = Year, y = count)) +
 
 (@) Using this recreation dataset from last week, can you find the average number of volunteer and paid workers over time? 
 ```{r}
-rec.workers <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv")
+rec.workers <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv") %>%
+ filter(type_of_worker == "" | state == "NC" | state == "GA") %>% 
+  group_by(state, Year) %>% 
+  summarize(count = n())
 
+ggplot(gg.byyear, aes(x = Year, y = count)) +
+  geom_line() + facet_wrap(~state)
 
 ```
 
