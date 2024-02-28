@@ -131,7 +131,7 @@ data(BostonWomenVoters)
 ggplot(data = BostonWomenVoters, aes(x = Age)) + 
   geom_histogram(bins = 80, color = "black", fill = "red")
 ```
-> I ended up having to look up what bins do online, since I could not find bins with the help function (?) in the console. 
+> I had to look up what bins do online, since I could not find bins with the help function (?) in the console. 
 
 (@) Explain, what does changing the number of bins do? 
 
@@ -247,10 +247,10 @@ gg.by.expenditures <- recreational.data %>%
   summarize(total_expenditures)
 
 ggplot(gg.by.expenditures, aes(x = city, y = total_expenditures)) +
-  geom_line() + facet_wrap(~state)
+  geom_col() + facet_wrap(~state)
 
 ```
-> Need to figure this one out still.
+> I could not get the chart to function with geom_line, but I could with geom_col. 
 
 (@) Using the gayguides data can you select 5 types of locations and chart the number of each type between 1965 and 1980? 
 ```{r}
@@ -309,7 +309,7 @@ ggplot(data = gg.by.judge, mapping = aes(x = Nomination.Date..1., y = count)) + 
 ```
 
 (@) Plot 1 explanation: 
-> I wanted to see how many judges were nominated at a given point. This would provide useful insights in seeing when presidents were trying to get judges appointed. The graph technically works, but it is not super useful since the nomination dates are way too long and I realistically cannot tell what dates judges were being nominated. I wanted to create a line graph, but I could not get that to work. That is why I resorted to creating a bar graph. 
+> I wanted to see how many judges were nominated at a given point. This would provide useful insights in seeing when presidents were trying to get judges appointed. The graph technically works, but it is not super useful since the nomination dates are way too long and I realistically cannot tell what dates the judges were being nominated. I wanted to create a line graph, but I could not get that to work (I think it has to do with how the nomination dates were inputted, and I might be able to mutate the values so that the years are seperated from the day and month). That is why I resorted to creating a bar graph. 
 
 (@) Plot 2
 ```{r}
@@ -332,7 +332,7 @@ ggplot(data = gg.by.midwest, mapping = aes(x = county, y = poptotal)) + geom_col
 ```
 
 (@) Plot 2 explanation: 
-> I wanted to see the population of the Midwest, largely to see which states had the most people. The way that they have the values broken down into counties messed up my bar chart. I decided to make another bar chart that looked at the population for certain counties in Michigan. The results were suprising, since Sagianw has a far larger population compared to Midland (which is to my understanding, a wealthy and growing city).
+> I wanted to see the population of the Midwest, largely to see which states had the most people. The way that the dataset has broken down the values to the county level has messed up my first bar chart attempt. I decided to make another bar chart that looked at the population for certain counties in Michigan. The results were suprising, since Sagianw has a far larger population compared to Midland (which is to my understanding, a wealthy and growing city).
 
 (@) Plot 3. For this one, try a different kind of plot. [Check out a useful gallery here.](https://github.com/regan008/DigitalMethodsData/blob/main/raw/RecreationData-Wide.csv)
 (For this week, avoid choosing a map. We'll talk more about maps and geographic data over the next two weeks.)
@@ -340,7 +340,7 @@ ggplot(data = gg.by.midwest, mapping = aes(x = county, y = poptotal)) + geom_col
 library(DigitalMethodsData)
 data("midwest")
 
-# choosing Gratiot as var 1 and Saginaw as var 2
+# choosing Gratiot as var1 and Saginaw as var2
 var1 = 38982
 var2 = 211946
 
