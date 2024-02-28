@@ -254,45 +254,107 @@ ggplot(gg.by.expenditures, aes(x = city, y = total_expenditures)) +
 
 (@) Using the gayguides data can you select 5 types of locations and chart the number of each type between 1965 and 1980? 
 ```{r}
+gg.by.location <- gayguides %>% 
+  filter(type == "Bars/Clubs" | type == "Cruising Areas" | type == "Restaurant" | type == "Book Store" | type == "Hotel") %>% 
+  filter(Year == 1965:1980) %>%
+  group_by(type, Year) %>% 
+  summarize(count = n())
 
+ggplot(gg.by.location, aes(x = Year, y = count)) +
+  geom_line() + facet_wrap(~type)
 ```
 
 (@) Using this recreation dataset from last week, can you find the average number of volunteer and paid workers over time? 
 ```{r}
-rec.workers <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv") %>%
- filter(type_of_worker == "" | state == "NC" | state == "GA") %>% 
-  group_by(state, Year) %>% 
-  summarize(count = n())
 
-ggplot(gg.byyear, aes(x = Year, y = count)) +
-  geom_line() + facet_wrap(~state)
+rec.workers <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv")
+
+paid_workers <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv") %>%
+  filter(type_of_worker == "male paid" | type_of_worker == "female paid") %>%
+  return()
+
+volunteer <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv") %>%
+  filter(type_of_worker == "men volunteer" | type_of_worker == "women volunteer") %>%
+  return()
+
+rec.workers.by.funding <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/RecreationData-Wide.csv") %>%
+  select(paid_workers, volunteer) %>% 
+  summarize(count=(paid_workers))
+  summarize(paid_workers, volunteer) %>%
+  summarize(avg = mean(paid_workers && volunteer))
+
+
+ggplot(rec.workers, aes(x = avq, y = X1930:X1945)) +
+  geom_line() + facet_wrap(~rec.workers.by.funding)
 
 ```
+> This one won't function. I might have made it more complicated than it needed to be, and that is why it could be malfunctioning. 
 
 ### Practice
 In the slots below use the datasets for class (or a dataset of your choice) to create a plot. The plot you create in each of these three examples should try to make some kind of historical observation. After you finish creating the plot, write a short paragraph that explains what kind of observation you were trying to make and what your plot demonstrates. 
 
 (@) Plot 1
 ```{r}
+library(DigitalMethodsData)
+data("judges")
 
+
+gg.by.judge <- judges %>%
+  filter(Appointment.Title..1. == "Judges" | Appointment.Title..1. == "Associate Justice") %>%
+  group_by(Nomination.Date..1.) %>% 
+  summarize(count = n())
+
+ggplot(data = gg.by.judge, mapping = aes(x = Nomination.Date..1., y = count)) + geom_col()
+  
 ```
 
 (@) Plot 1 explanation: 
->
+> I wanted to see how many judges were nominated at a given point. This would provide useful insights in seeing when presidents were trying to get judges appointed. The graph technically works, but it is not super useful since the nomination dates are way too long and I realistically cannot tell what dates judges were being nominated. I wanted to create a line graph, but I could not get that to work. That is why I resorted to creating a bar graph. 
 
 (@) Plot 2
 ```{r}
+library(DigitalMethodsData)
+data("midwest")
 
+gg.by.midwest <- midwest %>%
+  filter(state == "MI" | state == "IL" | state == "WI" | state == "OH") %>%
+  group_by(state) %>% 
+  summarize(poptotal)
+
+ggplot(data = gg.by.midwest, mapping = aes(x = state, y = poptotal)) + geom_col()
+
+gg.by.midwest <- midwest %>%
+  filter(county == "GRATIOT" | county == "IONIA" |county == "SAGINAW" |county == "GENESEE" |county == "MIDLAND") %>%
+  group_by(county) %>% 
+  summarize(poptotal)
+
+ggplot(data = gg.by.midwest, mapping = aes(x = county, y = poptotal)) + geom_col()
 ```
 
 (@) Plot 2 explanation: 
->
+> I wanted to see the population of the Midwest, largely to see which states had the most people. The way that they have the values broken down into counties messed up my bar chart. I decided to make another bar chart that looked at the population for certain counties in Michigan. The results were suprising, since Sagianw has a far larger population compared to Midland (which is to my understanding, a wealthy and growing city).
 
 (@) Plot 3. For this one, try a different kind of plot. [Check out a useful gallery here.](https://github.com/regan008/DigitalMethodsData/blob/main/raw/RecreationData-Wide.csv)
 (For this week, avoid choosing a map. We'll talk more about maps and geographic data over the next two weeks.)
 ```{r}
+library(DigitalMethodsData)
+data("midwest")
+
+# choosing Gratiot as var 1 and Saginaw as var 2
+var1 = 38982
+var2 = 211946
+
+# Chart
+p <- ggplot(data, aes(x=x) ) +
+  # Top
+  geom_density( aes(x = var1, y = ..density..), fill="green" ) +
+  geom_label( aes(x=25000, y=25000, label="Gratiot Population"), color="green") +
+  # Bottom
+  geom_density( aes(x = var2, y = -..density..), fill= "blue") +
+  geom_label( aes(x=25000, y=-25000, label="Saginaw Population"), color="blue") +
+  xlab("value of x")
 
 ```
 
 (@) Plot 3 explanation: 
->
+> I attempted to make a density chart. It runs but does not function (as in I don't get an error when I run it, but I also don't get any output either). I'm not really sure how to make this code work, I essenitally took the code from the example that R gallery provided and tried to plug in data from the midwest dataset. 
