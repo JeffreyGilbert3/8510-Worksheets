@@ -210,6 +210,19 @@ gayguides %>%
     select(title, city, state, Year) %>%
     group_by(city) %>%
   summarize(mean((city), state == "SC", Year > 1970 & Year < 1975))
+
+#correct version
+avg.by.year <- gayguides %>%
+  filter(state == "SC") %>%
+  filter(Year == 1970:1975) %>%
+  group_by(city, Year) %>% 
+  summarize(count = n()) %>%
+  summarize(avg = mean(count)) %>%
+  print()
+
+
+
+
 ```
 
 (@) Filter the dataset for only the values in the southernstates list (created in the block below). Then tell me, how many locations were in all the southern states in 1975?
@@ -220,6 +233,11 @@ gayguides %>%
   filter(southernstates) %>%
   select(city, Year) %>%
   summarize(southernstates & 1975)
+
+#correct version
+gayguides %>% 
+  select(description, city, Year, state) %>%
+  filter(state %in% southernstates)
   
 ```
 
@@ -242,6 +260,8 @@ A join allows us to join these two dataframes together, matching each row based 
 almshouse_admissions <- left_join(almshouse_admissions, almshouse.occupations, by=c("Descriptions.by.Clerk"="code"))
 
 head(almshouse_admissions)
+
+
 ```
 
 (@) Below I've downloaded data about each of the census regions. Join this dataset with `gayguides`. Create a data frame that includes each of the regions and the total number of locations in 1980. How many locations appear in the Mountain region in 1980?
@@ -249,6 +269,7 @@ head(almshouse_admissions)
 regions <- read.csv("https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/censusregions.csv")
 
 gayguidesregions <- cross_join(gayguides, regions)
+
 ```
 
 (@) Explain what you did above. What variable did you join by and why? What results?
@@ -276,6 +297,9 @@ This dataset contains all of the localities in South Carolina along with informa
 ```{r}
 sc.parks <- sc.parks %>%
   pivot_longer(!city:type_of_worker, names_to = "year", values_to = "count")
+
+#correct version
+sc.parks <- sc.parks %>% pivot_wider(names_from = year, values_from = "count")
 ```
 
 (@) What did this code do? 
@@ -302,6 +326,8 @@ sc.parks %>%
 ```{r}
 rec.spaces %>%
   pivot_wider(names_from = type, values_from = X1930)
+
+
 ```
 
 
@@ -346,6 +372,7 @@ judges %>%
 
 (@) Write a function that filters the gay guides dataset. It should accept 2 arguments: year and state. When passed to the function the function should return only the title, type, state and year for each entry. 
 ```{r}
+#this one does work currently
 library(DigitalMethodsData)
 library(tidyverse)
 data("gayguides")
@@ -358,5 +385,16 @@ maininformation <- function (gg.year, gg.state) {
   filtered.data <- maininformation(1984, "SC")
 print(filtered.data)
 
+
+#correct version but its not working
+gg.filter <- function(year.designated, state.designated) {
+  gg <- data(gayguides)
+  gg <- gg %>% select(Year, state, title, type) %>%
+  filter(Year == year.designated) %>% 
+  filter(state == state.designated)
+  return(gg)
+}
+
+gg.filter(1980, "NY")
 ```
 >I'm not sure how to write this function, but this is my best attempt at it. 

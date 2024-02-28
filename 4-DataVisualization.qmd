@@ -1,7 +1,7 @@
 ---
 title: 'Worksheet 4: Data Visualization'
-author: ''
-date: ''
+author: 'Jeffrey Gilbert'
+date: '2/28/2024'
 ---
 
 _This is the fourth in a series of worksheets for History 8510 at Clemson University. The goal of these worksheets is simple: practice, practice, practice. The worksheet introduces concepts and techniques and includes prompts for you to practice in this interactive document. When you are finished, you should change the author name (above), knit your document, and upload it to canvas. Don't forget to commit your changes as you go and push to github when you finish the worksheet._
@@ -36,7 +36,7 @@ data(gapminder)
 
 (@) Take a look at the data. What can you say about it? 
 
-> 
+> It provides information on various countries' life expectancy, population, and GDP from 1952 to 2007. 
 
 This data includes variables for life exptenency and per capita GDP. Lets say we want to plot these two variables against each other for all country-years within the dataset. First we have to tell `ggplot()` what our data is. 
 ```{r}
@@ -64,6 +64,16 @@ To summarize what we did above, there were 3 steps we went through. First, tell 
 
 (@) Modify the above plot so that the variables it draws on are life expectancy and population. Then, use a comment to annotate the code and mark each of the 3 parts described above.
 ```{r}
+#ggplot()
+p <- ggplot(data = gapminder) 
+
+p <- ggplot(data = gapminder, mapping = aes(x = pop, y=lifeExp))
+
+#mapping = aes()
+ggplot(data = gapminder, mapping = aes(x = pop, y=lifeExp))
+
+#geom_point()
+p + geom_point()
 
 ```
 
@@ -75,13 +85,21 @@ ggplot(data = gapminder, mapping = aes(x = gdpPercap, y=lifeExp, color=year)) + 
 
 (@) Using the same plot above, can you edit the code to add a trend line? (Hint: You'll need to add another geom)
 ```{r}
-
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y=lifeExp, color=year)) + 
+  geom_point() + 
+  geom_smooth() +
+  labs(x="GDP Per Capita", y="Life Expectency in Years", title="Life Expectency and Per Capita GDP by Year") 
 ```
 
 
 (@) The file below contains data about the population of cities in 1930 and their recreation expenditures. Can you create a scatter plot from this data? 
 ```{r}
-rec <- read.csv(file = "https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/Recreation-Expenditures.csv")
+rec <- read.csv(file = "https://raw.githubusercontent.com/regan008/DigitalMethodsData/main/raw/Recreation-Expenditures.csv")%>%
+  filter(state == "SC") %>%
+  group_by(year)
+
+  ggplot(rec, aes(x = city, y = population)) +
+  geom_point()
 ```
 
 The `geom_point()` function allows us to create scatterplots but its not the only geom within `ggplot2()`.
@@ -99,6 +117,10 @@ ggplot(recreational.data, aes(x = population)) +
 
 (@) Use the Boston Women's voters dataset to create a histogram of the age of voters. 
 ```{r}
+data(BostonWomenVoters)
+
+ggplot(data = BostonWomenVoters, aes(x = Age)) + 
+  geom_histogram()
 
 ```
 
