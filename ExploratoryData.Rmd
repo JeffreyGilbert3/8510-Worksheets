@@ -1,0 +1,128 @@
+---
+title: "ExploratoryData"
+output: html_document
+Author: "Jeffrey Gilbert"
+date: "2024-03-06"
+---
+
+```{r}
+#5.1 Formulate your question:
+#My question: Since the 19th Amendment was passed in 1920, this dataset provides us with the first year that  women were voting in Boston. I initially wanted to understand the demographic of the voters' husbands to see what demographic of men (through occupation) supported their wives voting the most. However, there is no occupation column for the husband, so I had to reframe how I wanted to understand this dynamic. The dataset does have marital status, so I can now look to see if women who are single are more likely to vote than married women. So, my question is: how did marital status effect the turnout for women voting in Boston. 
+```
+
+
+```{r}
+#5.2 Read in your data:
+library(ggplot2) 
+library(tidyverse)
+library(DigitalMethodsData)
+library(dplyr)
+library(readr)
+data("BostonWomenVoters")
+```
+
+```{r}
+#5.3 Check the packaging:
+nrow(BostonWomenVoters)
+
+ncol(BostonWomenVoters)
+```
+
+```{r}
+#5.4 Run str ():
+str(BostonWomenVoters)
+```
+
+```{r}
+#5.5 Look at the top and the bottom of your data:
+head(BostonWomenVoters)
+```
+```{r}
+#5.5 Look at the top and the bottom of your data"
+tail(BostonWomenVoters)
+```
+
+```{r}
+#5.6 Check your “n”s:
+#To see the voters that I am working with, which is thankfully the same amount that the nrow outputted (10,702).
+BostonWomenVoters %>% 
+  select(Name)
+```
+
+
+```{r}
+#5.6 Check your “n”s:
+#Lets me know that there are 1,312 single women voters in Boston. I included widows within this filter, since they are not technically married.
+BostonWomenVoters %>%
+  filter (Court.of.Naturalization == "single" | Court.of.Naturalization == "widowed")
+```
+
+
+```{r}
+#5.6 Check your “n”s:
+#Lets me know that there are 884 married women voting. 
+BostonWomenVoters %>%
+  filter (Court.of.Naturalization == "married")
+```
+```{r}
+#5.6 Check your “n”s:
+#What is interesting here is that I have a data set with 10,702 voters, and only yet only 2,196 of the voters are single or married. This lets me know that there is a lot of data missing from the Court.of.Naturalization column. 
+```
+
+```{r}
+#5.7 Validate with at least one external data source:
+#This is a data set produced by Analyze Boston, and here is a link to their webpage: https://data.boston.gov/dataset/1920-women-s-voter-register
+external.data <- read.csv("/Users/jeffreygilbert/downloads/1920-womens-voter-registers-dataset-01232024.csv")
+```
+
+```{r}
+#5.7 Validate with at least one external data source:
+#44,607 voters. 
+external.data %>% 
+  select(Name)
+```
+
+```{r}
+#5.7 Validate with at least one external data source:
+#1,913 married voters
+external.data %>%
+  filter (Court.of.Naturalization == "married")
+```
+```{r}
+#5.7 Validate with at least one external data source:
+#4,641 single women voters. 
+external.data %>%
+  filter (Court.of.Naturalization == "single" | Court.of.Naturalization == "widowed")
+```
+```{r}
+#5.7 Validate with at least one external data source:
+#for the external dataset, there are 44,607 voters with a total of 6,554 documented voters who are married or single. Compared to the BostonWomensVoters data set (10,702 voters, and 2,196 documented voters who are single or married), the datasets follow a similar trend. Which is to say that both are missing a substantial amount of data when it comes to marital status, but both tend to have more single women voting than married women. So given the difference in scale, I would say that this external dataset validates the BostonWomenVoters dataset. 
+```
+
+```{r}
+#5.8 Try the easy solution first:
+gg.by.status <- BostonWomenVoters %>%
+  filter(Court.of.Naturalization == "single" | Court.of.Naturalization == "married") %>%
+  group_by(Court.of.Naturalization) %>%
+  summarize(count = n())
+
+ggplot(data = gg.by.status, mapping = aes(x = Court.of.Naturalization, y = count)) + geom_col()
+```
+
+
+```{r}
+#5.9 Challenge your solution:
+gg.by.maritalstatus <- external.data %>%
+  filter(Court.of.Naturalization == "single" | Court.of.Naturalization == "married") %>%
+  group_by(Court.of.Naturalization) %>%
+  summarize(count = n())
+
+ggplot(data = gg.by.maritalstatus, mapping = aes(x = Court.of.Naturalization, y = count)) + geom_col()
+```
+
+
+```{r}
+#5.10 Follow up questions:
+# I know that both of these datsets are incomplete, and that the datasets were used as a way to understand a different question that I initially had. These two datasets indicate that single women in Boston were voting at a much higher rate than their those who are married. This data alone does not really tell me much about how much married men supported their wives, but it at minimum displays that women were more likely to vote if they were single. So this dataset was probably not the best for trying to understand my initial question, but it does open up new questions. This dataset shows Boston women voting for the first time. There are have been many elections since the 1920s, so I am curious how much this trend with regard to single women voting at a higher rate than married women has shifted, and if it did, how dramatically. There are other societal, economic, etc factors that are going to influence when individuals choose to vote, but the marital status trend still suggests potential tensions related to the patriarchy. 
+```
+
