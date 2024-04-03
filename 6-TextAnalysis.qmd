@@ -197,7 +197,7 @@ tidy_sotu <- sotu_whole %>%
 ```
 (@) Before we move forward, take a minute a describe the chunk of code you just ran. What does each section do and how does it reflect the workflow for a topic modeling project? What are the important steps that are unique to topic modeling? 
 
-> The unnest_tokens is tokenizing each word, so all of the text is now split into single words. The anti_join is being used to remove any stop words. 
+> The first section is loading in and setting up the data for the user to work with. With regard to sotu-whole, the code is arranging the data by president and is also combining the text files with their associated metadata. The unnest_tokens is tokenizing each word, so all of the text is now split into single words. The anti_join is being used to remove any stop words. Topic modeling is essenitally looking for patterns of co-occuring words, but the word order and the word's meaning does not really mean anything to the algoryth. It is essenitally placing the words in bins and then creating thematic topics from the bins. So this chunk of code is setting up for that process by loading in the text files, tokenizing the text so that it is split into single words, and removing any stop words that would create a topic of those stop words. 
 
 
 The most basic kind of analysis we might be interested in doing is counting words. We can do that easily using the `count()` function: 
@@ -258,7 +258,7 @@ tidy_sotu %>%
   summarize(avg_words = mean(n)) %>% 
   arrange(desc(avg_words))
 ```
-> It was not due to the stop words. The presidents tended to be ranked in the same position, but with a larger word count. 
+> It was not due to the stop words. The presidents tended to be ranked in the same position, just with a larger word count. 
 
 ```{r}
 #attempt 2
@@ -293,7 +293,7 @@ tidy_sotu %>%
 ```
 (@) The code above is commented to help you follow it. Walk through the code above, and explain what each line does in your own words. If its a function you are unfamiliar with, look up the documentation.
 
-> 
+>  Count is counting each word, essentially assigning 1 value to each word.Group_by is just grouping the data by the president column. Mutate(n_tot = sum(n),is creating a new column that has the total word count in each doc.Term_freq = n/n_tot) is determining the frequency of a word in relation to the total word count. So John Adam used united 49 times. 49 is then divided by the total word count (2768), which produces the term frequency value (0.017702312). Arrange(desc(term_freq)) is displaying the term frequency from most signifiacnt to least. Top_n(1) is selecting the top rows by value for each president. Print(n = Inf) is then printing all of the rows. 
 
 ### TF-IDF
 
@@ -330,10 +330,23 @@ sotu.tf.idf %>% arrange(desc(tf_idf))
 ```
 
 (@) Pick a president who served more than one term. Filter the dataset and generate both raw word counts and tf-idf scores for that president. What words are most significant in each method? Why and what does that tell you about that president? 
+```{r}
+tidy_sotu %>%
+  filter(president == "Franklin D. Roosevelt") %>%
+  count(word, sort = TRUE)
+```
+
 
 ```{r}
-
+sotu.fdr.tf.idf <- tidy_sotu %>%
+  filter(president =="Franklin D. Roosevelt") %>%
+  count(doc_id, word, sort = TRUE)  %>%  
+  bind_tf_idf(word, doc_id, n) 
+  
+  sotu.fdr.tf.idf %>% arrange(desc(tf_idf))
+  
 ```
+> FDR's most used words were war, world, government, people, national, and peace. Meanwhile the words with the most significant tf-idf scores were autocracy, projects, popular, rulers, eighty, and hitler. These outputs are hinting at the two major events impacting FDR's presidency, which were the Great Depression and World War II. 
 
 ### Co-Occurance
 Co-occurrence gives us a sense of words that appear in the same text, but not necessarily next to each other. It shows words that are likely to co-occur. Note that this is different than topic modeling, which we'll discuss next week. 
@@ -367,7 +380,18 @@ sotu_word_pairs %>%
 ```
 (@) Create a network graph that shows the relationship between words that appear between 125 and 175 times.
 ```{r}
+library(igraph)
+library(ggraph)
 
+sotu_word_pairs %>% 
+  filter(n == 125:175) %>%  
+  graph_from_data_frame() %>% 
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "purple") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
 ```
 
 ## Analyzing Historical Newspapers About Buffalo Bill
@@ -403,6 +427,11 @@ bb.metadata <- read.csv("https://raw.githubusercontent.com/dseefeldt/IndianaNews
 
 (@) There are a few problems with this metadata from a tidy data perspective. First the date column isn't useful for assessing change over time. Can you split it into 3 columns one for year, month, and day? This will be useful if you want to try and identify change over time. Use the Date column not the FullDate column. This column is messy and you'll need to clean it up in order to have useful data. 
 ```{r}
+library(tidyverse)
+bb.metadata2 <- separate(bb.metadata,
+         col = Date,
+         into = c("year", "month", "day"),
+         remove = FALSE)
 ```
 
 (@) Now lets load the BB data. This happens in a slightly different way than with the SOTU data since its local data and not data from an R package. 
