@@ -443,6 +443,16 @@ bb <- readtext(paste0(data_dir, "/*.txt"))
 (@) Now you need to join this with the metadata for each file. Note that doc_id and Filename are the same value. How would you join two datasets together in R so that you can proceed with textual analysis? 
 ```{r}
 
+bb_whole <- 
+  bb.metadata2 %>%  
+  arrange(Publication) %>% 
+  bind_cols(bb) %>% 
+  as_tibble() 
+
+tidy_bb <- bb_whole %>%
+  unnest_tokens(word, text)
+
+tidy_bb
 ```
 
 (@) Now you can begin your textual analysis for Dr. S. Add code chunks below and intersperse text to explain what you are doing and why in the text of the worksheet. 
