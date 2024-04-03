@@ -412,7 +412,7 @@ You should use the rest of this worksheet to practice text analysis (and R more 
 
 Write up a research plan in the space below. What are you looking to explore?
 
-> 
+> I want to explore how Buffalo Bill tried to convey the West to his audience, including the inhabitants and space. I want to see how poeple imagined the West through the lens of Buffalo Bill. 
 
 Lets download the data. 
 ```{r}
@@ -430,8 +430,8 @@ bb.metadata <- read.csv("https://raw.githubusercontent.com/dseefeldt/IndianaNews
 library(tidyverse)
 bb.metadata2 <- separate(bb.metadata,
          col = Date,
-         into = c("year", "month", "day"),
-         remove = FALSE)
+         into = c("month", "day", "year"),
+          remove = FALSE)
 ```
 
 (@) Now lets load the BB data. This happens in a slightly different way than with the SOTU data since its local data and not data from an R package. 
@@ -442,6 +442,12 @@ bb <- readtext(paste0(data_dir, "/*.txt"))
 
 (@) Now you need to join this with the metadata for each file. Note that doc_id and Filename are the same value. How would you join two datasets together in R so that you can proceed with textual analysis? 
 ```{r}
+stop_words_custom <- stop_words %>% 
+  add_row(word="buffalo", lexicon="NA")%>%
+  add_row(word="bill", lexicon="NA")%>%
+  add_row(word="bill's", lexicon="NA")%>%
+  add_row(word="cody", lexicon="NA")%>%
+  add_row(word="pg", lexicon="NA")
 
 bb_whole <- 
   bb.metadata2 %>%  
@@ -450,17 +456,92 @@ bb_whole <-
   as_tibble() 
 
 tidy_bb <- bb_whole %>%
-  unnest_tokens(word, text)
+  unnest_tokens(word, text)%>%
+  anti_join(stop_words_custom)
 
 tidy_bb
 ```
+> I added a bunch of stop words, since buffalo, bill, pg, and cody were skewing the results. 
 
 (@) Now you can begin your textual analysis for Dr. S. Add code chunks below and intersperse text to explain what you are doing and why in the text of the worksheet. 
-```{r}
 
+```{r}
+tidy_bb %>%
+  count(word, sort = TRUE)
+```
+
+```{r}
+bb.tf.idf <- tidy_bb %>%
+  group_by(Publication) %>%
+  count(doc_id, word, sort = TRUE)  %>%  
+  bind_tf_idf(word, doc_id, n) 
+  
+  bb.tf.idf %>% arrange(desc(tf_idf))
+```
+> I wanted to see what the word frequency was per publication, but this output does not give me much information that I can work with. 
+
+```{r}
+bb_word_pairs <- bb_whole %>% 
+  mutate(speech_end = word(text, -5000, end = -1)) %>% 
+  unnest_tokens(word, speech_end) %>%  
+  anti_join(stop_words_custom)%>%
+  pairwise_count(word, Filename, sort = TRUE, upper = FALSE)
+
+bb_word_pairs
+```
+> this is an interesting output, becuase it inidcates the pairing of words. Many of the pairings involve wild. So wild and indian, wild and west, wild and world, wild and life are some of the major pairing of words. These pairings may allude to the type of imagined place that Buffalo Bill wanted to convey to his audience, which is the west is wild and full of wild Native Americans. 
+
+```{r}
+library(igraph)
+library(ggraph)
+
+bb_word_pairs %>% 
+  filter(n >= 150) %>%  
+  graph_from_data_frame() %>% 
+  ggraph(layout = "fr") + 
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "blue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+```
+
+```{r}
+library(igraph)
+library(ggraph)
+
+bb_word_pairs %>% 
+  filter(n >= 50:200) %>%  
+  graph_from_data_frame() %>% 
+  ggraph(layout = "fr") + 
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "blue") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+```
+> The last two chunks are visualizing the pairings through networks. The first one requires a higher threshold of connectivity, which provided an interesting visualization. The deepest connection is wild and west, but indian, indians, and exhibition are also present at these high level of occurance. The second graph has a lower threshold and includes many more nodes. At this level, we see cowboys, riders, performance, features, rough, horse, and world being tied to west and wild. These data visualizations are useful for seeing how the West is being imagined, which is wild Natives, rough conditions, and now cowboys. 
+
+```{r}
+library(ggplot2)
+
+tidy_bb %>%
+  filter(word %in% c("wild", "indian")) %>% 
+  count(year, word) %>% 
+  ggplot(aes(year, n, fill = word)) +
+    geom_col(position = "fill")
 
 ```
 
+```{r}
+library(ggplot2)
+
+tidy_bb %>%
+  filter(word %in% c("rough", "indian")) %>% 
+  count(year, word) %>% 
+  ggplot(aes(year, n, fill = word)) +
+    geom_col(position = "fill")
+```
 
 (@) Finally, when you are all done. Write up your findings. What research question did you focus on and what did you learn? 
 
