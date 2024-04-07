@@ -413,6 +413,280 @@ bb.top.terms %>%
   scale_y_reordered()
 ```
 
+```{r}
+
+tidy_pbb <- bb_whole %>%
+  unnest_tokens(word, text)%>%
+  filter(R_P_E == "P") %>%
+  filter(str_detect(word, "[a-z']$")) %>% 
+  anti_join(stop_words_custom2)
+
+tidy_pbb <- tidy_pbb %>% filter(!grepl('[0-9]', word))
+```
+
+```{r}
+tidy_pbb_words <- tidy_pbb %>% count(Filename, word)
+```
+
+```{r}
+pbb.dtm <- tidy_pbb_words %>% 
+  count(Filename, word) %>% 
+  cast_dtm(Filename, word, n)
+```
+
+```{r}
+pbb.lda <- LDA(pbb.dtm, k = 12, control = list(seed = 52345))
+pbb.lda
+```
+
+```{r}
+pbb.topics <- tidy(pbb.lda, matrix = "beta")
+head(pbb.topics)
+```
+
+```{r}
+pbb.top.terms <- pbb.topics %>%
+  arrange(desc(beta)) %>% 
+  group_by(topic) %>% slice(1:5)
+
+pbb.top.terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+```{r}
+
+tidy_rbb <- bb_whole %>%
+  unnest_tokens(word, text)%>%
+  filter(R_P_E == "R") %>%
+  filter(str_detect(word, "[a-z']$")) %>% 
+  anti_join(stop_words_custom2)
+
+tidy_rbb <- tidy_rbb %>% filter(!grepl('[0-9]', word))
+```
+
+```{r}
+tidy_rbb_words <- tidy_rbb %>% count(Filename, word)
+```
+
+```{r}
+rbb.dtm <- tidy_rbb_words %>% 
+  count(Filename, word) %>% 
+  cast_dtm(Filename, word, n)
+```
+
+```{r}
+rbb.lda <- LDA(rbb.dtm, k = 12, control = list(seed = 52345))
+rbb.lda
+```
+
+```{r}
+rbb.topics <- tidy(rbb.lda, matrix = "beta")
+head(rbb.topics)
+```
+
+```{r}
+rbb.top.terms <- rbb.topics %>%
+  arrange(desc(beta)) %>% 
+  group_by(topic) %>% slice(1:5)
+
+rbb.top.terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+```{r}
+#early promo
+tidy_epbb <- bb_whole %>%
+  unnest_tokens(word, text)%>%
+  filter(R_P_E == "P") %>%
+  filter(year == 1883:1899) %>%
+  filter(str_detect(word, "[a-z']$")) %>% 
+  anti_join(stop_words_custom2)
+
+tidy_epbb <- tidy_epbb %>% filter(!grepl('[0-9]', word))
+```
+
+```{r}
+tidy_epbb_words <- tidy_epbb %>% count(Filename, word)
+```
+
+```{r}
+epbb.dtm <- tidy_epbb_words %>% 
+  count(Filename, word) %>% 
+  cast_dtm(Filename, word, n)
+```
+
+```{r}
+epbb.lda <- LDA(epbb.dtm, k = 12, control = list(seed = 53345))
+epbb.lda
+```
+
+```{r}
+epbb.topics <- tidy(epbb.lda, matrix = "beta")
+head(epbb.topics)
+```
+
+```{r}
+epbb.top.terms <- epbb.topics %>%
+  arrange(desc(beta)) %>% 
+  group_by(topic) %>% slice(1:5)
+
+epbb.top.terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+
+```{r}
+#later promo
+tidy_lpbb <- bb_whole %>%
+  unnest_tokens(word, text)%>%
+  filter(R_P_E == "P") %>%
+  filter(year == 1900:1916) %>%
+  filter(str_detect(word, "[a-z']$")) %>% 
+  anti_join(stop_words_custom2)
+
+tidy_lpbb <- tidy_lpbb %>% filter(!grepl('[0-9]', word))
+```
+
+```{r}
+tidy_lpbb_words <- tidy_lpbb %>% count(Filename, word)
+```
+
+```{r}
+lpbb.dtm <- tidy_lpbb_words %>% 
+  count(Filename, word) %>% 
+  cast_dtm(Filename, word, n)
+```
+
+```{r}
+lpbb.lda <- LDA(lpbb.dtm, k = 12, control = list(seed = 62345))
+lpbb.lda
+```
+
+```{r}
+lpbb.topics <- tidy(lpbb.lda, matrix = "beta")
+head(lpbb.topics)
+```
+
+```{r}
+lpbb.top.terms <- lpbb.topics %>%
+  arrange(desc(beta)) %>% 
+  group_by(topic) %>% slice(1:5)
+
+lpbb.top.terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+```{r}
+# early rec
+tidy_erbb <- bb_whole %>%
+  unnest_tokens(word, text)%>%
+  filter(R_P_E == "R") %>%
+  filter(year == 1883:1899) %>%
+  filter(str_detect(word, "[a-z']$")) %>% 
+  anti_join(stop_words_custom2)
+
+tidy_erbb <- tidy_erbb %>% filter(!grepl('[0-9]', word))
+```
+
+```{r}
+tidy_erbb_words <- tidy_erbb %>% count(Filename, word)
+```
+
+```{r}
+erbb.dtm <- tidy_erbb_words %>% 
+  count(Filename, word) %>% 
+  cast_dtm(Filename, word, n)
+```
+
+```{r}
+erbb.lda <- LDA(erbb.dtm, k = 12, control = list(seed = 72345))
+erbb.lda
+```
+
+```{r}
+erbb.topics <- tidy(erbb.lda, matrix = "beta")
+head(erbb.topics)
+```
+
+```{r}
+erbb.top.terms <- erbb.topics %>%
+  arrange(desc(beta)) %>% 
+  group_by(topic) %>% slice(1:5)
+
+erbb.top.terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+
+```{r}
+# later rec
+tidy_lrbb <- bb_whole %>%
+  unnest_tokens(word, text)%>%
+  filter(R_P_E == "R") %>%
+  filter(year == 1900:1916) %>%
+  filter(str_detect(word, "[a-z']$")) %>% 
+  anti_join(stop_words_custom2)
+
+tidy_lrbb <- tidy_lrbb %>% filter(!grepl('[0-9]', word))
+```
+
+```{r}
+tidy_lrbb_words <- tidy_lrbb %>% count(Filename, word)
+```
+
+```{r}
+lrbb.dtm <- tidy_lrbb_words %>% 
+  count(Filename, word) %>% 
+  cast_dtm(Filename, word, n)
+```
+
+```{r}
+lrbb.lda <- LDA(lrbb.dtm, k = 12, control = list(seed = 82345))
+lrbb.lda
+```
+
+```{r}
+lrbb.topics <- tidy(lrbb.lda, matrix = "beta")
+head(lrbb.topics)
+```
+
+```{r}
+lrbb.top.terms <- lrbb.topics %>%
+  arrange(desc(beta)) %>% 
+  group_by(topic) %>% slice(1:5)
+
+lrbb.top.terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+> Question I am answering: "Can we detect some change over time in promotion language and reception language (marketing and reviewing)? Were there types of characters, scenarios, action promised in promotional material and/or noted in reviews earlier vs later?" "To address the first research question, you'll need to plot topics over time. I would create three models, one for all of the data, one for promotion, and one for reception. What do we learn by doing this?"
+
+> 
+
 
 (@) Finally, when you are all done. Write up your findings. What research question did you focus on and what did you learn? 
 
