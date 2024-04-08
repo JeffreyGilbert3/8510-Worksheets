@@ -524,7 +524,7 @@ epbb.dtm <- tidy_epbb_words %>%
 ```
 
 ```{r}
-epbb.lda <- LDA(epbb.dtm, k = 12, control = list(seed = 53345))
+epbb.lda <- LDA(epbb.dtm, k = 12, control = list(seed = 13222))
 epbb.lda
 ```
 
@@ -570,7 +570,7 @@ lpbb.dtm <- tidy_lpbb_words %>%
 ```
 
 ```{r}
-lpbb.lda <- LDA(lpbb.dtm, k = 12, control = list(seed = 62345))
+lpbb.lda <- LDA(lpbb.dtm, k = 12, control = list(seed = 13222))
 lpbb.lda
 ```
 
@@ -615,7 +615,7 @@ erbb.dtm <- tidy_erbb_words %>%
 ```
 
 ```{r}
-erbb.lda <- LDA(erbb.dtm, k = 12, control = list(seed = 72345))
+erbb.lda <- LDA(erbb.dtm, k = 12, control = list(seed = 13222))
 erbb.lda
 ```
 
@@ -661,7 +661,7 @@ lrbb.dtm <- tidy_lrbb_words %>%
 ```
 
 ```{r}
-lrbb.lda <- LDA(lrbb.dtm, k = 12, control = list(seed = 82345))
+lrbb.lda <- LDA(lrbb.dtm, k = 12, control = list(seed = 13222))
 lrbb.lda
 ```
 
@@ -683,14 +683,11 @@ lrbb.top.terms %>%
   scale_y_reordered()
 ```
 
-> Question I am answering: "Can we detect some change over time in promotion language and reception language (marketing and reviewing)? Were there types of characters, scenarios, action promised in promotional material and/or noted in reviews earlier vs later?" "To address the first research question, you'll need to plot topics over time. I would create three models, one for all of the data, one for promotion, and one for reception. What do we learn by doing this?"
-
-> 
-
-
 (@) Finally, when you are all done. Write up your findings. What research question did you focus on and what did you learn? 
 
+> Question I am answering: "Can we detect some change over time in promotion language and reception language (marketing and reviewing)? Were there types of characters, scenarios, action promised in promotional material and/or noted in reviews earlier vs later?" "To address the first research question, you'll need to plot topics over time. I would create three models, one for all of the data, one for promotion, and one for reception. What do we learn by doing this?"
 
+> The promotional language being used from 1883-1899 constructed an image of an entertaining environment that exhibits characters from the wild west (cowboys, gauchos, cowboys, and riders). The topcs focused more on what the show was about than the excitement that the show produces for the audiance. On the other hand, the promotional language being used later on (1900-1916) reflects a show that already has reviews and uses those views to promote the show. Although the topics still includes aspects of the show (riders, cavalry, indian, etc), there are far more topics that relate to the popular/exciting scenes and aspects of the show (famous circus, famous scenes, west exhibit sells, battles, etc.). The topics assoicated with the early reception also focus on some aspect of the show, but more on how the audience felt about the scenes (applauded, cowboys, attacked; intricate, riders, proceeded; news, herioc, emerged). Additionally, the topics focused on the environemnt itself (express, cars, awaited; performance, people, expected; performance, necessity, delights; parade, crowd, cars, fail). In general, it appears that Buffalo Bill had a warm recepetion and drew from the more postive reviews to promote his show. The recepetion later on had focused on simialr aspects as the early reception, but later reception indicates a larger-scale show that primarily focuses on battles/conflict. With regard to the show's environment, the topics indicate a large gathering (covered, coach, city; covered, coast, west, cars; time, delayed, conditions; fine, behaved, awaiting; wild, exhibitions, cosmopolitan). Regarding the topics associated with the performances, there seems to be a focus on Native Americans and conflicts (indians, discharge, attracted; performance, indians, time, rough; wild, nations, battle). By filtering the topic model to hone in on the promotion and reception seperately, as well as within designated time frames, the changing of the promotional language overtime became quite apparent, especially as it relates to the reviews. Buffalo Bill's later promotional language reflects the positive aspects of the reviews, where his later shows (1900-1916) appear to reflect the scenes that the reviewers enjoyed the most from the past shows (1883-1899). 
 
 **This was the final worksheet for this class. You did it - you learned to code in R! Congrats!**
 
